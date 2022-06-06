@@ -41,11 +41,12 @@ class Calculator:
         self.input_available = True
         self.operator = ''
         self.result = False
+        self.second_op = False
 
     def enterNumber(self, number):
         first_number = entry.get()
         second_number = number
-        if len(self.current) <= 19:
+        if len(self.current) <= 18:
             if self.input_available:
                 self.current = second_number
                 self.input_available = False
@@ -83,17 +84,22 @@ class Calculator:
             return self.current
 
     def operation(self, op):
+        self.operator = op
         if not self.result:
             self.total = float(self.current)
             self.current = ''
             self.result = True
+            self.second_op = True
             display('0')
-        elif self.result:
-            outcome = self.counting()
-            self.total = outcome
-            display(outcome)
+        else:  # elif just in case
+            if not self.second_op:
+                outcome = self.counting()
+                self.total = outcome
+                display(outcome)
+                self.second_op = False
+            else:
+                pass
         self.input_available = True
-        self.operator = op
 
     def equals(self):
         outcome = self.counting()
@@ -103,11 +109,29 @@ class Calculator:
         self.input_available = True
         self.operator = ''
         self.result = False
+        self.second_op = False
 
     # Functions
 
+    def negation(self):
+        self.current = float(self.current) * -1
+        self.current = str(self.current)
+        display(self.current)
+
     def pi(self):
         self.current = round(math.pi, 16)
+        display(self.current)
+
+    def log2(self):
+        self.current = math.log2(float(self.current))
+        display(self.current)
+
+    def power(self):
+        self.current = float(self.current) ** 2
+        display(self.current)
+
+    def root2(self):
+        self.current = math.sqrt(float(self.current))
         display(self.current)
 
     def sine(self):
@@ -134,9 +158,32 @@ class Calculator:
         self.current = math.tanh(math.radians(float(self.current)))
         display(self.current)
 
+    def arcSine(self):
+        self.current = math.asin(float(self.current))
+        display(self.current)
+
+    def arcCosine(self):
+        self.current = math.acos(float(self.current))
+        display(self.current)
+
+    def arcTangent(self):
+        self.current = math.atan(float(self.current))
+        display(self.current)
+
+    def hyperbolicArcSine(self):
+        self.current = math.asinh(float(self.current))
+        display(self.current)
+
+    def hyperbolicArcCosine(self):
+        self.current = math.acosh(float(self.current))
+        display(self.current)
+
+    def hyperbolicArcTangent(self):
+        self.current = math.atanh(float(self.current))
+        display(self.current)
+
 
 calculator = Calculator()
-
 
 # ROW 1
 buttonClear = Button(calc,
@@ -182,7 +229,8 @@ buttonLog2 = Button(calc,
                     border=0,
                     bg='#505050',
                     activebackground='#808080',
-                    font=('Helvetica', 20, 'bold')).grid(row=1, column=4, pady=1)
+                    font=('Helvetica', 20, 'bold'),
+                    command=lambda: calculator.log2()).grid(row=1, column=4, pady=1)
 buttonLogX = Button(calc,
                     text='logx',
                     width=6,
@@ -190,7 +238,7 @@ buttonLogX = Button(calc,
                     border=0,
                     bg='#505050',
                     activebackground='#808080',
-                    font=('Helvetica', 20, 'bold')).grid(row=1, column=5, pady=1)
+                    font=('Helvetica', 20, 'bold')).grid(row=1, column=5, pady=1)  # TODO: command
 buttonExponentiation2 = Button(calc,
                                text='x²',
                                width=6,
@@ -198,7 +246,8 @@ buttonExponentiation2 = Button(calc,
                                border=0,
                                bg='#505050',
                                activebackground='#808080',
-                               font=('Helvetica', 20, 'bold')).grid(row=1, column=6, pady=1)
+                               font=('Helvetica', 20, 'bold'),
+                               command=lambda: calculator.power()).grid(row=1, column=6, pady=1)
 buttonExponentiationX = Button(calc,
                                text='xⁿ',
                                width=6,
@@ -206,7 +255,8 @@ buttonExponentiationX = Button(calc,
                                border=0,
                                bg='#505050',
                                activebackground='#808080',
-                               font=('Helvetica', 20, 'bold')).grid(row=1, column=7, pady=1)
+                               font=('Helvetica', 20, 'bold'),
+                               command=lambda: calculator.powerX()).grid(row=1, column=7, pady=1)  # TODO: command
 
 # ROW 2
 buttonSeven = Button(calc,
@@ -252,7 +302,8 @@ buttonRoot2 = Button(calc,
                      border=0,
                      bg='#505050',
                      activebackground='#808080',
-                     font=('Helvetica', 20, 'bold')).grid(row=2, column=4, pady=1)
+                     font=('Helvetica', 20, 'bold'),
+                     command=lambda: calculator.root2()).grid(row=2, column=4, pady=1)
 buttonSine = Button(calc,
                     text='sin',
                     width=6,
@@ -278,7 +329,8 @@ buttonTangent = Button(calc,
                        border=0,
                        bg='#505050',
                        activebackground='#808080',
-                       font=('Helvetica', 20, 'bold')).grid(row=2, column=7, pady=1)
+                       font=('Helvetica', 20, 'bold'),
+                       command=lambda: calculator.tangent()).grid(row=2, column=7, pady=1)
 
 # ROW 3
 buttonFour = Button(calc,
@@ -324,7 +376,7 @@ buttonRootX = Button(calc,
                      border=0,
                      bg='#505050',
                      activebackground='#808080',
-                     font=('Helvetica', 20, 'bold')).grid(row=3, column=4, pady=1)
+                     font=('Helvetica', 20, 'bold')).grid(row=3, column=4, pady=1)  # TODO: command
 buttonHyperbolicSine = Button(calc,
                               text='sinh',
                               width=6,
@@ -390,6 +442,33 @@ buttonSubtraction = Button(calc,
                            activebackground='#ffb54d',
                            font=('Helvetica', 20, 'bold'),
                            command=lambda: calculator.operation('-')).grid(row=4, column=3, pady=1)
+buttonArcSine = Button(calc,
+                       text='asin',
+                       width=6,
+                       height=2,
+                       border=0,
+                       bg='#505050',
+                       activebackground='#808080',
+                       font=('Helvetica', 20, 'bold'),
+                       command=lambda: calculator.arcSine()).grid(row=4, column=5, pady=1)
+buttonArcCosine = Button(calc,
+                         text='acos',
+                         width=6,
+                         height=2,
+                         border=0,
+                         bg='#505050',
+                         activebackground='#808080',
+                         font=('Helvetica', 20, 'bold'),
+                         command=lambda: calculator.arcCosine()).grid(row=4, column=6, pady=1)
+buttonArcTangent = Button(calc,
+                          text='atan',
+                          width=6,
+                          height=2,
+                          border=0,
+                          bg='#505050',
+                          activebackground='#808080',
+                          font=('Helvetica', 20, 'bold'),
+                          command=lambda: calculator.arcTangent()).grid(row=4, column=7, pady=1)
 
 # ROW 5
 buttonNegation = Button(calc,
@@ -399,7 +478,8 @@ buttonNegation = Button(calc,
                         border=0,
                         bg='#505050',
                         activebackground='#808080',
-                        font=('Helvetica', 20, 'bold')).grid(row=5, column=0, pady=1)
+                        font=('Helvetica', 20, 'bold'),
+                        command=lambda: calculator.negation()).grid(row=5, column=0, pady=1)
 buttonZero = Button(calc,
                     text='0',
                     width=6,
@@ -416,8 +496,8 @@ buttonDot = Button(calc,
                    border=0,
                    bg='#505050',
                    activebackground='#808080',
-                   command=lambda: calculator.enterNumber('.'),
-                   font=('Helvetica', 20, 'bold')).grid(row=5, column=2, pady=1)
+                   font=('Helvetica', 20, 'bold'),
+                   command=lambda: calculator.enterNumber('.')).grid(row=5, column=2, pady=1)
 buttonEquals = Button(calc,
                       text='=',
                       width=6,
@@ -427,6 +507,33 @@ buttonEquals = Button(calc,
                       activebackground='#ffb54d',
                       font=('Helvetica', 20, 'bold'),
                       command=lambda: calculator.equals()).grid(row=5, column=3, pady=1)
+buttonHyperbolicArcSine = Button(calc,
+                                 text='asinh',
+                                 width=6,
+                                 height=2,
+                                 border=0,
+                                 bg='#505050',
+                                 activebackground='#808080',
+                                 font=('Helvetica', 20, 'bold'),
+                                 command=lambda: calculator.hyperbolicArcSine()).grid(row=5, column=5, pady=1)
+buttonHyperbolicArcCosine = Button(calc,
+                                   text='acosh',
+                                   width=6,
+                                   height=2,
+                                   border=0,
+                                   bg='#505050',
+                                   activebackground='#808080',
+                                   font=('Helvetica', 20, 'bold'),
+                                   command=lambda: calculator.hyperbolicArcCosine()).grid(row=5, column=6, pady=1)
+buttonHyperbolicArcTangent = Button(calc,
+                                    text='atanh',
+                                    width=6,
+                                    height=2,
+                                    border=0,
+                                    bg='#505050',
+                                    activebackground='#808080',
+                                    font=('Helvetica', 20, 'bold'),
+                                    command=lambda: calculator.hyperbolicArcTangent()).grid(row=5, column=7, pady=1)
 
 entry.grid(row=0, column=0, columnspan=8, pady=1)
 root.mainloop()
